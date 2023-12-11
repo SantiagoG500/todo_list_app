@@ -2,10 +2,10 @@ import { MainContent } from '../ui/main-content';
 import { Modal } from '../ui/modal';
 import { Nav } from '../ui/nav';
 import { TodoContainer } from '../ui/todo-container';
+import { IndexedDB } from './indexed_db';
 import { Project } from './project';
 import { ProjectList } from './project-list';
 import { Todo } from './todo';
-import { TodoList } from './todo-list';
 
 export const Listener = (e) => {
   const target = e.target;
@@ -41,6 +41,7 @@ const ListererActions = (() => {
 
     MainContent.loadContent(newProject);
 
+    IndexedDB.getProjects(ProjectList.getAllProjects());
     Nav.loadProjects(projects);
     Modal.destroyModal();
   };
@@ -94,6 +95,9 @@ const ListererActions = (() => {
     Modal.destroyModal();
 
     TodoContainer.loadContent(project);
+    const projects = ProjectList.getAllProjects();
+    // console.log(projects);
+    // IndexedDB.getProjects(ProjectList.getAllProjects());
   };
   const editTodo = () => {
     const mainContent = document.getElementById('main-content');

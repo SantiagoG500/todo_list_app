@@ -1,12 +1,17 @@
 import './css/normalize.css';
-import { Listener } from './js/functions/listener';
-import { Modal } from './js/ui/modal';
-import { UI } from './js/ui/ui';
 import './styles.css';
 
-const mainContainer = document.getElementById('main-container');
+import { Listener } from './js/functions/listener';
+import { UI } from './js/ui/ui';
+import { IndexedDB } from './js/functions/indexed_db';
+import { ProjectList } from './js/functions/project-list';
 
-document.addEventListener('load', UI.load());
-// mainContainer.addEventListener('pointerdown', () => Listener);
+const mainContainer = document.getElementById('main-container');
+const initApp = () => {
+  UI.load();
+  IndexedDB.init();
+  IndexedDB.getProjects(ProjectList.getAllProjects());
+};
+
+document.addEventListener('load', initApp());
 mainContainer.addEventListener('pointerdown', Listener);
-// Modal.newTodo();
