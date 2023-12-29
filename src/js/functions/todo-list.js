@@ -1,5 +1,11 @@
-export const TodoList = () => {
-  const todos = [];
+import { Todo } from './todo';
+
+export const TodoList = (todoList = []) => {
+  let todos = [];
+  if (todoList.length !== 0) {
+    const mappedData = todoList.map((todo) => Todo(todo.data));
+    todos = [...mappedData];
+  }
 
   const addTodo = (todo = {}) => {
     const isInList = checkTodo(todo);
@@ -29,9 +35,11 @@ export const TodoList = () => {
 
   return {
     todos,
-    addTodo,
-    deleteTodo,
-    getTodo,
-    showTodos,
+    utils: {
+      addTodo,
+      deleteTodo,
+      getTodo,
+      showTodos,
+    },
   };
 };

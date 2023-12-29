@@ -2,10 +2,10 @@ import { MainContent } from '../ui/main-content';
 import { Modal } from '../ui/modal';
 import { Nav } from '../ui/nav';
 import { TodoContainer } from '../ui/todo-container';
-import { IndexedDB } from './indexed_db';
 import { Project } from './project';
 import { ProjectList } from './project-list';
 import { Todo } from './todo';
+import { LocalStorage } from './local-storage';
 
 export const Listener = (e) => {
   const target = e.target;
@@ -36,14 +36,17 @@ const ListererActions = (() => {
       return Modal.showMessage.fillAllFields();
 
     // Crate database and load the projects in it
-    if (!foundedProject) ProjectList.addProject(newProject);
-    else return Modal.showMessage.projectFounded(title);
+    if (!foundedProject) {
+      ProjectList.addProject(newProject);
+    } else return Modal.showMessage.projectFounded(title);
 
     MainContent.loadContent(newProject);
 
-    IndexedDB.getProjects(ProjectList.getAllProjects());
+    // LocalStorage.(projects);
+    LocalStorage.setProjectList(projects);
     Nav.loadProjects(projects);
     Modal.destroyModal();
+    console.log(projects);
   };
   const openProject = (e) => {
     const target = e.target;
@@ -67,10 +70,11 @@ const ListererActions = (() => {
     const status = document.getElementById('status').value;
 
     const project = ProjectList.getProject(projectName);
+    const projects = ProjectList.getAllProjects();
     const { todoList } = project;
 
     const condition = todoTitle === '' || todoDescription === '';
-    const foundedTodo = todoList.getTodo(todoTitle);
+    const foundedTodo = todoList.utils.getTodo(todoTitle);
 
     if (condition) return Modal.showMessage.fillAllFields();
 
@@ -91,13 +95,12 @@ const ListererActions = (() => {
       return;
     }
 
-    todoList.addTodo(newTodo);
+    todoList.utils.addTodo(newTodo);
     Modal.destroyModal();
 
+    LocalStorage.setProjectList(projects);
     TodoContainer.loadContent(project);
-    const projects = ProjectList.getAllProjects();
-    // console.log(projects);
-    // IndexedDB.getProjects(ProjectList.getAllProjects());
+    console.log(project);
   };
   const editTodo = () => {
     const mainContent = document.getElementById('main-content');
@@ -124,7 +127,7 @@ const ListererActions = (() => {
 
     const currentProject = ProjectList.getProject(dataProject);
     const { todoList } = currentProject;
-    const currentTodo = todoList.getTodo(dataTodo);
+    const currentTodo = todoList.utils.getTodo(dataTodo);
 
     for (const key in propGroup) {
       const conditions = {
@@ -158,6 +161,7 @@ const ListererActions = (() => {
         Modal.showMessage.customError(error);
         return;
       }
+      LocalStorage.setProjectList(ProjectList.getAllProjects());
     }
 
     Modal.destroyModal();

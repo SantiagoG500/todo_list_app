@@ -1,3 +1,6 @@
+import { Project } from './project';
+import { TodoList } from './todo-list';
+
 export const ProjectList = (() => {
   const projects = [];
 
@@ -38,10 +41,21 @@ export const ProjectList = (() => {
   };
   const getAllProjects = () => projects;
 
+  const setProjectsFromLS = (projects = []) => {
+    for (const project of projects) {
+      const { todos, data } = project;
+      const todoList = TodoList(todos);
+      const obj = Project({ ...data }, todoList);
+
+      addProject(obj);
+    }
+  };
+
   return {
     addProject,
     deleteProject,
     getProject,
     getAllProjects,
+    setProjectsFromLS,
   };
 })();
